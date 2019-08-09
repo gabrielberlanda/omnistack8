@@ -16,12 +16,8 @@ module.exports = {
         .json({ error: 'Dev not exists' });
     }
 
-    if(targetDev.likes.includes(loggedDev._id)) {
-      console.log('Deu match :p');
-    } else {
-      loggedDev.likes.push( targetDev._id );
-      await loggedDev.save();
-    }
+    loggedDev.dislikes.push( targetDev._id );
+    await loggedDev.save();
 
     return res.json(loggedDev);
     

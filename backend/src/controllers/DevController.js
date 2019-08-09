@@ -13,7 +13,7 @@ module.exports = {
       return res.json(userExists);
     }
 
-    const response = await axios.get(`https://api.github.com/users/${username}`);
+    const response = await axios.get(`https://api.github.com/users/${user}`);
 
     const { name, bio, avatar_url: avatar } = response.data;
 
@@ -24,10 +24,23 @@ module.exports = {
       user,
     });
 
-    console.log(response.data);
-
     return res.json(dev);
 
+  },
+
+  async index(req, res) {
+    const { user } = req.headers;
+
+    const loggedDev = await Dev.findById(user);
+
+    const users = await Dev.find({
+      $and: [
+        { _id: { $ne: user } },
+        { _id: { $nin: [...loggedDev.likes, ...loggedDev.dislikes] } },
+      ],
+    });
+
+    return res.json(users);
   }
 
 }
